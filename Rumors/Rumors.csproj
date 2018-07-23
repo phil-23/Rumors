@@ -42,8 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Networks\BANetwork.cs" />
+    <Compile Include="Networks\INetworkNode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\CollectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
