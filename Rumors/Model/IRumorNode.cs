@@ -3,10 +3,10 @@ using Rumors.Networks;
 
 namespace Rumors.Model
 {
-    interface IRumorNode<T> : INetworkNode<T> where T : IRumorNode<T>
+    interface IRumorNode<TNode,TRumor> : INetworkNode<TNode> where TNode : INetworkNode<TNode> where TRumor : IRumor
     {
-        IEnumerable<Rumor> Memory { get; }
+        IEnumerable<IRumor> Memory { get; }
 
-        void AddToMemory(Rumor rumor);
+        void AddToMemory(IRumor rumor);
     }
 }

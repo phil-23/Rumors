@@ -2,8 +2,10 @@
 
 namespace Rumors.Networks
 {
-    interface INetworkNode<T> where T : INetworkNode<T>
+    interface INetworkNode<TNode> where TNode : INetworkNode<TNode>
     {
-        IList<T> Neighbors { get; } 
+        IEnumerable<TNode> Neighbors { get; }
+
+        void AddNeighbor(TNode neighbor);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rumors.Utilities;
 
 namespace Rumors.Networks
@@ -46,7 +47,7 @@ namespace Rumors.Networks
         private static T CreateNode<T>(List<T> nodes, int m, Func<T> factory, Random random) where T : INetworkNode<T>
         {
             var newNode = factory();
-            var linkedNodes = nodes.WeightedRandom(x => x.Neighbors.Count, random, m);
+            var linkedNodes = nodes.WeightedRandom(x => x.Neighbors.Count(), random, m);
             foreach(var node in linkedNodes)
             {
                 Link(newNode, node);
@@ -56,8 +57,8 @@ namespace Rumors.Networks
 
         private static void Link<T>(T node1, T node2) where T : INetworkNode<T>
         {
-            node1.Neighbors.Add(node2);
-            node2.Neighbors.Add(node1);
+            node1.AddNeighbor(node2);
+            node2.AddNeighbor(node1);
         }
     }
 }

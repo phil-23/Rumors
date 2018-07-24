@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\IRumorNode.cs" />
+    <Compile Include="Model\IRumor.cs" />
+    <Compile Include="Model\RumorNodeExtensions.cs" />
     <Compile Include="Networks\BANetwork.cs" />
     <Compile Include="Networks\INetworkNode.cs" />
     <Compile Include="Program.cs" />

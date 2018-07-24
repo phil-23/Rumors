@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rumors.Networks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,14 +7,14 @@ namespace Rumors.Model
 {
     static class RumorNodeExtensions
     {
-        public static IDictionary<Rumor,double> InformationFrequency<T> (this IRumorNode<T> node) where T : IRumorNode<T>
+        public static IDictionary<IRumor, double> InformationFrequency<TNode,TRumor>(this IRumorNode<TNode, TRumor> node) where TNode : INetworkNode<TNode> where TRumor : IRumor
         {
             int current;
-            var counts = new Dictionary<Rumor, int>();
+            var counts = new Dictionary<IRumor, int>();
 
-            foreach(var rumor in node.Memory)
+            foreach (var rumor in node.Memory)
             {
-                if(counts.TryGetValue(rumor, out current))
+                if (counts.TryGetValue(rumor, out current))
                 {
                     counts[rumor] = current + 1;
                 }
@@ -27,17 +28,29 @@ namespace Rumors.Model
             return counts.ToDictionary(x => x.Key, x => (double)x.Value / total);
         }
 
-        public static double ShannonEntropy<T>(this IRumorNode<T> node) where T : IRumorNode<T>
+        public static double DistortionChance<TNode,TRumor>(this IRumorNode<TNode,TRumor> node, float K) where TNode : INetworkNode<TNode> where TRumor : IRumor
         {
-            var f = node.InformationFrequency();
-            return -f.Sum(fi => fi.Value * Math.Log(fi.Value, 2));
-        }
-
-        public static double DistortionChance<T>(this IRumorNode<T> node, float K) where T : IRumorNode<T>
-        {
-            var Hn = node.ShannonEntropy();
-            var Hmax = Math.Log(1.0 / Rumor.INFORMATION_SPACE, 2);
+            var Hn = Entropy<TNode,TRumor>.ShannonEntropy(node);
+            var Hmax = Entropy<TNode, TRumor>.MaxEntropy(node);
             return 1.0 / (Math.Exp(K * (Hmax - Hn) / Hmax) + 1.0);
-        }        
+        }     
+        
+        private static class Entropy<TNode,TRumor> where TNode : INetworkNode<TNode> where TRumor : IRumor
+        {
+            public static double ShannonEntropy(IRumorNode<TNode, TRumor> node)
+            {
+                var f = node.InformationFrequency();
+                return -f.Sum(fi => fi.Value * Math.Log(fi.Value, 2));
+            }
+
+            public static double MaxEntropy(IRumorNode<TNode, TRumor> node)
+            {
+                if(!node.Memory.Any())
+                {
+                    return 0.0;
+                }
+                return Math.Log(1.0 / node.Memory.First().InformationSpace, 2);
+            }
+        }
     }
 }
